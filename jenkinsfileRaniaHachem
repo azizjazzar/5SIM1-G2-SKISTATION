@@ -10,7 +10,6 @@ pipeline {
             }
         }
 
-
         stage('Tests') {
             steps {
                 echo 'Exécution des tests...'
@@ -27,6 +26,14 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sq_env') {  
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+
         stage('Déploiement') {
             steps {
                 echo 'Déploiement de l\'application...'
@@ -38,15 +45,12 @@ pipeline {
 
     post {
         success {
-
             echo 'Pipeline exécuté avec succès.'
         }
         failure {
-
             echo 'Le pipeline a échoué.'
         }
         always {
-
             echo 'Pipeline terminé.'
         }
     }
